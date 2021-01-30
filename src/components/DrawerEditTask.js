@@ -1,5 +1,7 @@
 import { useState, useEffect }from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
+import { openDrawer }  from '../actions';
+import { DrawerStyles } from '../styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -7,28 +9,27 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const useStyles = makeStyles({
-  list: {
-    width: 500,
-  },
-  fullList: {
-    width: 'auto',
-  },
-  button:{
-    width: 100
-  }
-});
+const DrawerEditTask = ( { toggleDrawerClose = () => {}, toggleDrawerOpen = () => {}, selectedId = false } ) => {
 
-
-const DrawerEditTask = ( { openEdit, toggleDrawerClose = () => {}, toggleDrawerOpen = () => {}, selectedId = false } ) => {
-
-  const classes = useStyles();
+  const classes = DrawerStyles();
 
   const [selectedTask, setSelectedTask] = useState({created:""});
-  const [status, setStatus] = useState(0);
+  const [status, setStatus]             = useState(0);
+
+  const commonData = useSelector(state => state.commonData);
+  const dispatch   = useDispatch();
+
+  const toggleDrawer = ( open ) => event => {
+debugger;
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        return;
+    }
+debugger;
+    dispatch( openDrawer( open ) );
+
+  };
 
   useEffect(() => {
 
@@ -78,7 +79,7 @@ const DrawerEditTask = ( { openEdit, toggleDrawerClose = () => {}, toggleDrawerO
     .then(res => res.json())
     .then(
       (result) => {
-        toggleDrawerClose()
+        toggleDrawer(false);
       },
       (error) => {
         console.log(error);
@@ -111,15 +112,14 @@ const DrawerEditTask = ( { openEdit, toggleDrawerClose = () => {}, toggleDrawerO
     <>
           <SwipeableDrawer
             anchor='right'
-            open={openEdit}
-            onClose={toggleDrawerClose}
-            onOpen={toggleDrawerOpen}
+            open={commonData.drawer_open}
+            onClose = {toggleDrawer(false)}
+            onOpen  = {toggleDrawer(true)}
           >
             <Box p={3}>
               <div
                 className={classes.list}
                 role="presentation"
-                
               >
                 
                 <h1>{selectedTask.title}</h1>
@@ -170,7 +170,7 @@ const DrawerEditTask = ( { openEdit, toggleDrawerClose = () => {}, toggleDrawerO
                       <Button
                         variant="contained"
                         color="secondary"
-                        onClick={deleteTask}
+                        onClick={toggleDrawer(false)}
                       >
                         Delete
                       </Button>

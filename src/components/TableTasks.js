@@ -1,4 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { openDrawer }  from '../actions';
+import { useDispatch } from 'react-redux';
+import { TableStyles } from '../styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -18,35 +20,15 @@ import HighlightOff from '@material-ui/icons/HighlightOff';
 
 import { Button } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
-  table: {
-    minWidth: 650,
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(3),
-  },
-  title: {
-    flex: '1 1 100%',
-  },
-  addtask: {
-    width: 100,
-  }, 
-  done: {
-    color: 'green'
-  },
-  pending: {
-    color: 'red'
-  }
-}));
+const TableTask = ( { tasks, handleOpen = () => {}, setSelectedId = () => {} } ) => {
 
-const TableTask = ( { tasks, handleOpen = () => {}, toggleDrawerOpen = () => {}, setSelectedId = () => {} } ) => {
-
-  const classes = useStyles();
-
-  const openDrawer = ( id ) => {
+  const classes  = TableStyles();
+  const dispatch = useDispatch();
+  
+  const handleOpenDrawer = ( id ) => {
+    dispatch( openDrawer( true ) );
+    dispatch( openDrawer( true ) );
     setSelectedId(id);
-    toggleDrawerOpen();
   }
 
   return (
@@ -87,9 +69,9 @@ const TableTask = ( { tasks, handleOpen = () => {}, toggleDrawerOpen = () => {},
               </TableHead>
               <TableBody>
                 {tasks.map((row) => (                 
-                  <TableRow key={row.id} onClick={ () => { openDrawer(row.id) } }>
+                  <TableRow key={row.id} onClick={ () => { handleOpenDrawer(row.id) } }>
                     <TableCell> 
-                      { row.completed == 1 ? <CheckCircleOutline className={classes.done} /> : <HighlightOff className={classes.pending} />}
+                      { row.completed === 1 ? <CheckCircleOutline className={classes.done} /> : <HighlightOff className={classes.pending} />}
                     </TableCell>
                     <TableCell>{row.title}</TableCell>
                     <TableCell>{row.created.slice(0, 10)}</TableCell>
