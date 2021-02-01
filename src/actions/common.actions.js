@@ -1,6 +1,14 @@
-
 import { commonDataConstants } from '../constants';
 
-export const openDrawer = open => dispatch => {
-    dispatch({ type: commonDataConstants.OPEN_DRAWER, open })
+export const commonActions = {
+    openDrawer,
+    openModal
 };
+
+function openDrawer( open ) {
+    return { type: commonDataConstants.OPEN_DRAWER, open }
+}
+
+function openModal( open ) {
+    return { type: commonDataConstants.OPEN_MODAL, open }
+}

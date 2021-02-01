@@ -1,5 +1,6 @@
-import { openDrawer }  from '../actions';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { commonActions, tasksActions } from '../actions';
+import { useSelector, useDispatch } from 'react-redux';
 import { TableStyles } from '../styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -16,40 +17,50 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import HighlightOff from '@material-ui/icons/HighlightOff';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { Button } from '@material-ui/core';
 
-const TableTask = ( { tasks, handleOpen = () => {}, setSelectedId = () => {} } ) => {
+const TableTask = () => {
 
   const classes  = TableStyles();
   const dispatch = useDispatch();
-  
+
+  const tasksData = useSelector(state => state.tasksData);
+
   const handleOpenDrawer = ( id ) => {
-    dispatch( openDrawer( true ) );
-    dispatch( openDrawer( true ) );
-    setSelectedId(id);
+    dispatch( commonActions.openDrawer( true ) );
+    dispatch( tasksActions.setSelectedTaskId( id ) );
   }
+
+  const handleOpenModal = () => {
+    dispatch( commonActions.openModal( true ) );
+  }
+
+  useEffect(() => {
+    dispatch( tasksActions.getList() );
+  }, [ tasksData.updated_task, tasksData.deleted_task, tasksData.saved_task ])
 
   return (
     <>
       <CssBaseline />
-      
+
       <Container maxWidth="lg">
         <Typography variant="h4" gutterBottom>
           <Box mt={4} mb={4}>
             My Tasks
           </Box>
-        </Typography> 
+        </Typography>
         <Paper className={classes.paper}>
-          <Toolbar 
+          <Toolbar
             className={classes.root}
           >
             <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
               Tasks
             </Typography>
             <Tooltip title="Add task">
-              <Button color="primary" onClick={handleOpen}>
+              <Button color="primary" onClick={handleOpenModal}>
                 <AddCircleOutlineIcon />
                 <Typography className={classes.addtask} variant="caption" component="div" ml={4}>
                     Add task
@@ -68,16 +79,23 @@ const TableTask = ( { tasks, handleOpen = () => {}, setSelectedId = () => {} } )
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tasks.map((row) => (                 
-                  <TableRow key={row.id} onClick={ () => { handleOpenDrawer(row.id) } }>
-                    <TableCell> 
-                      { row.completed === 1 ? <CheckCircleOutline className={classes.done} /> : <HighlightOff className={classes.pending} />}
-                    </TableCell>
-                    <TableCell>{row.title}</TableCell>
-                    <TableCell>{row.created.slice(0, 10)}</TableCell>
-                    <TableCell>{row.description.slice(0, 50)}</TableCell>
-                  </TableRow>
-                ))}
+                {
+                  tasksData.loading_list
+                  ? <TableRow>
+                      <TableCell align='center' colSpan={'100%'}>
+                        <CircularProgress disableShrink />
+                      </TableCell>
+                    </TableRow>
+                  : tasksData.list.map((row) => (
+                      <TableRow key={row.id} onClick={ () => { handleOpenDrawer(row.id) } }>
+                        <TableCell>
+                          { row.completed === 1 ? <CheckCircle className={classes.done} /> : <CheckCircleOutline className={classes.pending} />}
+                        </TableCell>
+                        <TableCell>{row.title}</TableCell>
+                        <TableCell>{row.created.slice(0, 10)}</TableCell>
+                        <TableCell>{row.description.slice(0, 50)}</TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </TableContainer>

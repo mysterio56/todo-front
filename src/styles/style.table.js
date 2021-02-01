@@ -13,11 +13,11 @@ export const TableStyles = makeStyles((theme) => ({
   },
   addtask: {
     width: 100,
-  }, 
+  },
   done: {
     color: 'green'
   },
   pending: {
-    color: 'red'
+    color: '#8f949f'
   }
 }));

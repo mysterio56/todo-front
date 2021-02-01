@@ -22,5 +22,17 @@ export const ModalStyles = makeStyles((theme) => ({
   },
   button: {
     width: 100
+  },
+  buttonCancel: {
+    backgroundColor: '#e4e5e9 !important',
+    marginRight: '1rem !important',
+    color: '#444860 !important'
+  },
+  buttonSave: {
+    backgroundColor: '#3c5cbf !important',
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   }
 }));
