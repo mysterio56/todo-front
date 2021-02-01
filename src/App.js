@@ -14,7 +14,7 @@ const App = () => {
   return (
     <>
       <TableTasks />
-      <ModalAddTask handleClose={ () => { handleClose() } }/>
+      <ModalAddTask />
       <DrawerEditTask />
     </>
   );
