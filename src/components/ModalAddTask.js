@@ -97,7 +97,7 @@ const TransitionsModal = () => {
                 <TextField
                   fullWidth
                   id="outlined-basic"
-                  label="Description"
+                  placeholder="Description"
                   variant="outlined"
                   multiline
                   rows={4}
